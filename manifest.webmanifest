@@ -1,13 +1,13 @@
 {
- "name": "Palavramar",
- "short_name": "Palavramar",
+ "name": "SuperPalavra",
+ "short_name": "SuperPalavra",
  "lang": "pt-PT",
  "start_url": "./index.html",
  "scope": "./",
  "display": "standalone",
  "orientation": "portrait",
  "background_color": "#dff4fb",
- "theme_color": "#1fb5c9",
+ "theme_color": "#7c3aed",
  "icons": [
   {
    "src": "icon-192.png",

@@ -1,17 +1,11 @@
-<svg viewBox="-100 -100 200 200" width="512" height="512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Palavramar"><g transform="translate(-100 -100)">
-  <defs><linearGradient id="lg-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fb5c9"/><stop offset="1" stop-color="#0b3d6e"/></linearGradient></defs>
-  <circle cx="100" cy="100" r="96" fill="url(#lg-sea)"/>
+<svg viewBox="-100 -100 200 200" width="512" height="512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="SuperPalavra"><g transform="translate(-100 -100)">
+  <defs><linearGradient id="lg-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#1d4ed8"/></linearGradient></defs>
+  <circle cx="100" cy="100" r="96" fill="url(#lg-bg)"/>
   <circle cx="100" cy="100" r="96" fill="none" stroke="#fff" stroke-width="5"/>
-  <circle cx="146" cy="52" r="15" fill="#ffd23f"/>
-  <path d="M104 30 L104 124 L168 124Z" fill="#fff"/>
-  <path d="M98 44 L98 124 L44 124Z" fill="#ffd23f"/>
-  <path d="M104 50 Q132 54 148 100" stroke="#bfe7ff" stroke-width="3" fill="none"/>
-  <circle cx="82" cy="104" r="3.500" fill="#e8743b"/><circle cx="72" cy="108" r="2.500" fill="#e8743b"/>
-  <rect x="100" y="26" width="5" height="102" rx="2" fill="#5b3a1a"/>
-  <path d="M104 26 L124 33 L104 40Z" fill="#ef4444"/>
-  <path d="M36 124 L172 124 L152 150 L58 150Z" fill="#e8743b"/>
-  <path d="M42 131 L166 131" stroke="#fff" stroke-width="4"/>
-  <path d="M6 150 Q28 138 50 150 T94 150 T138 150 T194 150 L194 196 L6 196Z" fill="#1d6fb8" opacity=".95"/>
-  <path d="M6 150 Q28 138 50 150 T94 150 T138 150 T194 150" stroke="#fff" stroke-width="4" fill="none"/>
-  <path d="M6 168 Q28 158 50 168 T94 168 T138 168 T194 168" stroke="#fff" stroke-width="3" fill="none" opacity=".45"/>
+  <path d="M52 44Q100 22 148 44Q172 96 138 158L100 142L62 158Q28 96 52 44Z" fill="#ef4444"/>
+  <path d="M100 36L100 142" stroke="#000" stroke-opacity=".12" stroke-width="3"/>
+  <path d="M58 52L142 52L142 104Q142 142 100 164Q58 142 58 104Z" fill="#ffd23f" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M72 64H128a8 8 0 0 1 8 8V96a8 8 0 0 1-8 8H108L96 116L94 104H72a8 8 0 0 1-8-8V72a8 8 0 0 1 8-8Z" fill="#fff"/>
+  <path d="M100.0 67.0L104.5 77.8L116.2 78.7L107.3 86.4L110.0 97.8L100.0 91.7L90.0 97.8L92.7 86.4L83.8 78.7L95.5 77.8Z" fill="#7c3aed"/>
+  <path d="M40 141 Q41.35 148.65 49 150 Q41.35 151.35 40 159 Q38.65 151.35 31 150 Q38.65 148.65 40 141Z" fill="#fff" opacity="0.95"/><path d="M164 32 Q165.2 38.8 172 40 Q165.2 41.2 164 48 Q162.8 41.2 156 40 Q162.8 38.8 164 32Z" fill="#fff" opacity="0.95"/><path d="M160 144 Q160.9 149.1 166 150 Q160.9 150.9 160 156 Q159.1 150.9 154 150 Q159.1 149.1 160 144Z" fill="#ffd23f" opacity="1"/>
   </g></svg>
