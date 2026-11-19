@@ -211,6 +211,26 @@ input[type=range]{width:100%;accent-color:var(--mar)}
 .listen{flex:none;width:88px;min-width:88px;max-width:88px;height:88px}
 .row:has(.listen){justify-content:center}
 
+.lvl{display:flex;gap:12px;align-items:center;background:#fff;border-radius:20px;padding:10px 14px;box-shadow:0 4px 0 #b9d4e2;width:100%;flex:none}
+.lvbadge{flex:none;width:54px;height:54px;border-radius:50%;background:#7c3aed;color:#fff;font-family:var(--f-marca);font-weight:800;font-size:30px;display:grid;place-items:center;box-shadow:0 4px 0 #4c1d95}
+.lvbody{flex:1;min-width:0;text-align:left}
+.lvname{font-weight:800;color:var(--mar-fundo);line-height:1.1}
+.xpbar{height:12px;border-radius:6px;background:#e6ecf2;overflow:hidden;margin:5px 0 3px}
+.xpbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,#a855f7,#7c3aed)}
+.lvl small{color:var(--suave);font-size:14px}
+.price.lock{background:#e6ecf2;color:#64748b;box-shadow:0 4px 0 #cbd5e1}
+.cell.lvl .card-btn{opacity:.5;filter:grayscale(.7)}
+.bigl{font-family:var(--f-marca);font-weight:800;font-size:96px;line-height:1;color:#7c3aed}
+.row:has(.listen){gap:22px}
+.listen.me{background:#7c3aed;color:#fff;box-shadow:0 6px 0 #4c1d95}
+.listen.me:active,.listen.me.recording{box-shadow:0 2px 0 #4c1d95;transform:translateY(4px)}
+.listen.me.recording{background:#e0344a;animation:recglow 1s ease-in-out infinite}
+@keyframes recglow{0%{box-shadow:0 2px 0 #9d1f31,0 0 0 0 rgba(224,52,74,.6)}100%{box-shadow:0 2px 0 #9d1f31,0 0 0 22px rgba(224,52,74,0)}}
+.listen.play{background:var(--alga);color:#fff;box-shadow:0 6px 0 #17844d}
+.listen.play:active{box-shadow:0 2px 0 #17844d}
+.sheet{max-height:92%;overflow-y:auto}
+.sheet .grid .card-svg{width:100%}
+
 </style>
 </head>
 <body>
@@ -578,13 +598,14 @@ const ICON={
   play:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.500v15l13-7.500z"/></svg>',
   shop:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l-1 12H6zM8 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="2.200" fill="none" stroke-linejoin="round"/><circle cx="12" cy="14" r="2.200"/></svg>',
   album:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="11" height="15" rx="2.500"/><rect x="10" y="4" width="11" height="15" rx="2.500" opacity=".6"/></svg>',
+  lock:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10V8a5 5 0 0 1 10 0v2h1.500a1.500 1.500 0 0 1 1.500 1.500v8a1.500 1.500 0 0 1-1.500 1.500h-13A1.500 1.500 0 0 1 4 19.500v-8A1.500 1.500 0 0 1 5.500 10zm2 0h6V8a3 3 0 0 0-6 0z"/></svg>',
   check:'<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" stroke="currentColor" stroke-width="3.500" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>'
 };
 
 /* ---------- estado e gravação ---------- */
 const KEY='superpalavra.v1';
-const defaults=()=>({avatar:null,coins:0,cards:{},stats:{},daily:{date:'',sessions:0,extra:0},totals:{words:0,perfect:0,sessions:0},
-  settings:{tol:'normal',rate:.85,upper:false,spaced:true,sound:true,mic:'auto',size:8,cap:3,levels:[1,2],chips:[],custom:[]}});
+const defaults=()=>({avatar:null,xp:0,coins:0,cards:{},stats:{},daily:{date:'',sessions:0,extra:0},totals:{words:0,perfect:0,sessions:0},
+  settings:{selfrec:true,tol:'normal',rate:.85,upper:false,spaced:true,sound:true,mic:'auto',size:8,cap:3,levels:[1,2],chips:[],custom:[]}});
 function merge(o){const d=defaults();return {...d,...o,settings:{...d.settings,...(o.settings||{})},daily:{...d.daily,...(o.daily||{})},totals:{...d.totals,...(o.totals||{})}}}
 let S;
 try{const raw=localStorage.getItem(KEY);S=merge(raw?JSON.parse(raw):{})}catch(e){S=merge({})}
@@ -592,6 +613,28 @@ setHeroAvatar(S.avatar);
 let storageOK=true;
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){storageOK=false}}
 function daily(){if(S.daily.date!==todayKey()){S.daily={date:todayKey(),sessions:0,extra:0}}return S.daily}
+
+/* ---------- níveis e XP ---------- */
+const LEVEL_NAMES=['Recruta','Aprendiz','Cadete','Defensor','Guardião','Campeão','Capitão','Comandante','Mestre','Herói','Super-Herói','Lenda'];
+const MAXLV=LEVEL_NAMES.length;
+const XPV={perfect:10,good:7,close:4,miss:3},XP_BONUS=20;
+const xpNeed=l=>80+30*(l-1);
+function lvlInfo(xp){let l=1,rest=xp;while(l<MAXLV&&rest>=xpNeed(l)){rest-=xpNeed(l);l++}return{l,cur:rest,need:l>=MAXLV?0:xpNeed(l),max:l>=MAXLV}}
+/* cada nível desbloqueia cartas: comuns 6 por nível (1-4), raras 6 (5-7), épicas 4 (8-10), lendárias 3 (11-12) */
+const UNL=(()=>{
+  const rk={comum:0,rara:1,epica:2,lendaria:3},cnt={},pos={},ci=Object.keys(CATS);
+  CARDS.forEach(c=>{const k=c.cat+c.r;pos[c.id]=cnt[k]||0;cnt[k]=(cnt[k]||0)+1});
+  const spec={comum:[1,6],rara:[5,6],epica:[8,4],lendaria:[11,3]},out={};
+  Object.keys(rk).forEach(r=>{
+    const arr=CARDS.filter(c=>c.r===r).sort((a,b)=>pos[a.id]-pos[b.id]||ci.indexOf(a.cat)-ci.indexOf(b.cat));
+    arr.forEach((c,i)=>{out[c.id]=spec[r][0]+Math.floor(i/spec[r][1])});
+  });
+  return out;
+})();
+function lvlBlock(){
+  const L=lvlInfo(S.xp);
+  return `<div class="lvl" aria-label="Nível ${L.l}, ${LEVEL_NAMES[L.l-1]}"><div class="lvbadge">${L.l}</div><div class="lvbody"><div class="lvname">${LEVEL_NAMES[L.l-1]}</div><div class="xpbar"><i style="width:${L.max?100:Math.round(L.cur/L.need*100)}%"></i></div><small>${L.max?'Nível máximo!':L.cur+' / '+L.need+' XP'}</small></div></div>`;
+}
 
 /* ---------- palavras ---------- */
 const ACC='aeiouáéíóúâêôàãõ';
@@ -752,6 +795,7 @@ function renderHome(){
   setScreen(`
   <div class="top">${coinsPill()}<div class="coins" style="font-size:20px;color:var(--mar-fundo)" aria-label="${ownedCount()} de ${CARDS.length} cartas">${ICON.album}<span>${ownedCount()}/${CARDS.length}</span></div></div>
   <div class="brand"><div class="wordmark"><b>Super</b>palavra</div><div class="tagline">Lê, fala e torna-te um herói!</div></div>
+  ${lvlBlock()}
   <div class="hero">${mascotSVG('happy')}<div class="logo">${logoIconSVG(84)}</div></div>
   <div class="menu">
     ${wellRested?`<div class="rest"><h3>Já jogaste bastante hoje!</h3><p class="muted">Os olhos e a voz também precisam de descanso. Amanhã há mais palavras à tua espera.</p></div>
@@ -784,7 +828,7 @@ const MSG={
 function startSession(){
   const words=pickSession(S.settings.size);
   if(!words.length){renderHome();return}
-  G={words,i:0,earned:0,ok:0,best:0,tries:0,manual:S.settings.mic==='manual',phase:'ready',note:''};
+  G={words,i:0,earned:0,xp:0,bestXp:0,lvl0:lvlInfo(S.xp).l,ok:0,best:0,tries:0,manual:S.settings.mic==='manual',phase:'ready',note:''};
   AC();renderPlay();
 }
 function renderPlay(){
@@ -794,7 +838,7 @@ function renderPlay(){
   <div class="top"><button class="iconbtn" data-act="quit" aria-label="Sair do jogo">${ICON.close}</button><div class="dots" aria-label="Palavra ${G.i+1} de ${G.words.length}">${dots}</div>${coinsPill()}</div>
   <div class="talk"><div id="mm">${mascotSVG('happy')}</div><div class="bubble" id="bubble">${pick(MSG.start)}</div></div>
   <div class="wordcard">${syllables(w)}</div>
-  <div class="row"><button class="listen" id="listen" data-act="slow" aria-label="Ouvir devagar" title="Ouvir devagar">${ICON.speaker}</button></div>
+  <div class="row"><button class="listen" id="listen" data-act="slow" aria-label="Ouvir a palavra devagar" title="Ouvir a palavra devagar">${ICON.speaker}</button>${S.settings.selfrec?`<button class="listen me" id="selfbtn" data-act="self" aria-label="Gravar e ouvir a minha voz" title="Gravar e ouvir a minha voz">${ICON.mic}</button><button class="listen play" id="replay" data-act="replay" style="display:none" aria-label="Ouvir a minha voz outra vez" title="Ouvir a minha voz outra vez">${ICON.play}</button>`:''}</div>
   <div class="micwrap" id="micwrap"></div>
   <div class="earn" id="earn"></div>
   <div id="after"></div>`,'play');
@@ -819,6 +863,7 @@ async function doSlow(){
 }
 async function doMic(){
   if(G.phase==='listening')return;
+  if(REC&&REC.state==='recording')REC.mr.stop();
   G.phase='listening';G.tries++;
   const mic=$('#mic');if(mic)mic.classList.add('listening');
   mood('happy','Estou a ouvir...');hint('Diz a palavra agora');
@@ -837,6 +882,7 @@ async function doMic(){
 }
 function finishAttempt(grade){
   const w=G.words[G.i],c=COINS[grade];
+  const xv=XPV[grade];if(xv>G.bestXp){const d=xv-G.bestXp;S.xp+=d;G.xp+=d;G.bestXp=xv}
   if(c>G.best){S.coins+=c-G.best;G.earned+=c-G.best;G.best=c;save();bumpCoins()}
   const strong=grade==='perfect'||grade==='good';
   G.phase=(strong||G.tries>=2)?'result':'ready';
@@ -867,23 +913,62 @@ function nextWord(){
   const w=G.words[G.i],st=S.stats[w.plain]||(S.stats[w.plain]={n:0,ok:0,box:1});
   const ok=G.best>=2;st.n++;if(ok){st.ok++;st.box=Math.min(3,(st.box||1)+1)}else st.box=1;
   S.totals.words++;if(G.best===3)S.totals.perfect++;if(ok)G.ok++;
-  G.i++;G.best=0;G.tries=0;G.phase='ready';G.note='';
+  freeSelf();G.i++;G.best=0;G.bestXp=0;G.tries=0;G.phase='ready';G.note='';
   save();
   if(G.i>=G.words.length)return endSession();
   renderPlay();
 }
 function endSession(){
-  const bonus=5;S.coins+=bonus;const d=daily();d.sessions++;S.totals.sessions++;save();
+  freeSelf();const bonus=5;S.coins+=bonus;S.xp+=XP_BONUS;G.xp+=XP_BONUS;const l1=lvlInfo(S.xp).l,l0=G.lvl0,gx=G.xp;const d=daily();d.sessions++;S.totals.sessions++;save();
   const earned=G.earned+bonus,ok=G.ok,total=G.words.length;
   sfx.fan();
   setScreen(`<div class="top"><span></span>${coinsPill()}</div>
   <h2>Que jogo fantástico!</h2>
   ${mascotSVG('cheer')}
-  <div class="stat"><div class="pill">${coinSVG().replace('<svg','<svg width="36" height="36"')}<div>+${earned}<small>moedas</small></div></div><div class="pill"><div>${ok} de ${total}<small>palavras bem lidas</small></div></div></div>
+  <div class="stat"><div class="pill">${coinSVG().replace('<svg','<svg width="36" height="36"')}<div>+${earned}<small>moedas</small></div></div><div class="pill"><div>+${gx}<small>XP</small></div></div><div class="pill"><div>${ok} de ${total}<small>palavras bem lidas</small></div></div></div>
+  ${lvlBlock()}
   <p class="muted">Inclui ${bonus} moedas de bónus por terminares o jogo.</p>
   <div class="menu"><button class="btn sol big" data-act="shop">${ICON.shop} Ir à loja</button><button class="btn ghost" data-act="home">Voltar ao início</button></div>`,'summary');
   confetti($('#app'));
   G=null;
+  if(l1>l0)setTimeout(()=>levelUpModal(l0,l1),900);
+}
+function levelUpModal(l0,l1){
+  const unl=CARDS.filter(c=>UNL[c.id]>l0&&UNL[c.id]<=l1);
+  sfx.win();
+  modal(`<h3>Subiste de nível!</h3><div class="bigl">${l1}</div><p><b>${LEVEL_NAMES[l1-1]}</b></p>${unl.length?`<p class="muted">Há ${unl.length} cartas novas na loja:</p><div class="grid g3">${unl.slice(0,6).map(c=>`<div class="cell">${cardSVG(c,{locked:true})}</div>`).join('')}</div>`:''}<button class="btn coral" data-act="mclose">Continuar</button>`);
+}
+
+/* ---------- ouvir a própria voz ---------- */
+let REC=null;
+function freeSelf(){if(REC){try{if(REC.mr&&REC.mr.state==='recording')REC.mr.stop();REC.audio&&REC.audio.pause()}catch(e){}if(REC.url)try{URL.revokeObjectURL(REC.url)}catch(e){}REC=null}}
+async function doSelf(){
+  if(!G)return;
+  if(REC&&REC.state==='recording'){REC.mr.stop();return}
+  freeSelf();try{speechSynthesis.cancel()}catch(e){}
+  if(!(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia&&window.MediaRecorder)){mood('happy','Neste aparelho não dá para gravar a tua voz.');return}
+  let st;try{st=await navigator.mediaDevices.getUserMedia({audio:true})}catch(e){mood('happy','Preciso que um adulto deixe usar o microfone.');return}
+  if(!G){st.getTracks().forEach(x=>x.stop());return}
+  const mr=new MediaRecorder(st),chunks=[];
+  REC={mr,state:'recording',url:null,audio:null};
+  mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data)};
+  mr.onstop=()=>{
+    st.getTracks().forEach(x=>x.stop());
+    const cur=REC;if(!cur||cur.mr!==mr)return;
+    cur.state='done';const b=$('#selfbtn');if(b)b.classList.remove('recording');
+    if(!chunks.length){mood('happy','Não ouvi nada. Tenta outra vez!');return}
+    cur.url=URL.createObjectURL(new Blob(chunks,{type:mr.mimeType||'audio/webm'}));
+    const r=$('#replay');if(r)r.style.display='';
+    playSelf();
+  };
+  mr.start();
+  const b=$('#selfbtn');if(b)b.classList.add('recording');
+  mood('happy','Diz a palavra! Toca outra vez para parar.');
+  setTimeout(()=>{if(REC&&REC.mr===mr&&mr.state==='recording')mr.stop()},4500);
+}
+function playSelf(){
+  if(!REC||!REC.url)return;
+  try{if(REC.audio)REC.audio.pause();REC.audio=new Audio(REC.url);REC.audio.play().catch(()=>{});mood('cheer','Ouve como disseste!')}catch(e){}
 }
 
 /* ---------- ecrã: loja ---------- */
@@ -893,15 +978,19 @@ function tabsHTML(cur,act){
   return `<div class="tabs" role="group" aria-label="Filtrar">${t.map(([k,l])=>`<button class="tab" data-act="${act}" data-cat="${k}" aria-pressed="${cur===k}">${l}</button>`).join('')}</div>`;
 }
 function renderShop(){
-  const list=CARDS.filter(c=>shopCat==='all'||c.cat===shopCat).sort((a,b)=>RARITY[a.r].price-RARITY[b.r].price||(a.id>b.id?1:-1));
+  const lv=lvlInfo(S.xp).l;
+  const rank=c=>S.cards[c.id]?1:UNL[c.id]<=lv?0:2;
+  const list=CARDS.filter(c=>shopCat==='all'||c.cat===shopCat).sort((a,b)=>rank(a)-rank(b)||(rank(a)===2?UNL[a.id]-UNL[b.id]:0)||RARITY[a.r].price-RARITY[b.r].price||(a.id>b.id?1:-1));
   const cells=list.map(c=>{
     const own=!!S.cards[c.id],R=RARITY[c.r],can=S.coins>=R.price;
     if(own)return `<div class="cell own"><button class="card-btn" data-act="view" data-id="${c.id}" aria-label="${c.name}, já tens">${cardSVG(c)}</button><div class="price" style="color:var(--alga)">${ICON.check} Já tens</div></div>`;
+    if(UNL[c.id]>lv)return `<div class="cell lvl"><button class="card-btn" data-act="lvlinfo" data-id="${c.id}" aria-label="Carta bloqueada, desbloqueia no nível ${UNL[c.id]}">${cardSVG(c,{locked:true})}</button><div class="price lock">${ICON.lock} Nível ${UNL[c.id]}</div></div>`;
     return `<div class="cell"><button class="card-btn" data-act="buy" data-id="${c.id}" aria-label="Carta misteriosa, ${R.name}, custa ${R.price} moedas">${cardSVG(c,{locked:true})}</button>
       <div class="price ${can?'ok':''}">${coinSVG()}${R.price}</div>${can?'':`<div class="bar" aria-hidden="true"><i style="width:${Math.min(100,S.coins/R.price*100)}%"></i></div>`}</div>`;
   }).join('');
   setScreen(`<div class="top"><button class="iconbtn" data-act="home" aria-label="Voltar">${ICON.back}</button><h2>Loja</h2>${coinsPill()}</div>
-  <p class="muted">Escolhe uma carta e junta moedas para a comprar. Quanto mais rara, mais custa.</p>
+  ${lvlBlock()}
+  <p class="muted">Compra as cartas com moedas. Sobe de nível para desbloquear cartas mais raras!</p>
   ${tabsHTML(shopCat,'shoptab')}<div class="grid">${cells}</div>`,'shop');
 }
 function askBuy(id){
@@ -913,7 +1002,7 @@ function askBuy(id){
 }
 function buy(id){
   const c=CARDS.find(x=>x.id===id),R=RARITY[c.r];
-  if(S.cards[id]||S.coins<R.price)return;
+  if(S.cards[id]||S.coins<R.price||UNL[id]>lvlInfo(S.xp).l)return;
   S.coins-=R.price;S.cards[id]=1;save();
   $$('.overlay').forEach(o=>o.remove());
   const m=modal(`<div class="flip" id="flip"><div class="inner"><div class="face">${cardBackSVG()}</div><div class="face back">${cardSVG(c)}</div></div></div>
@@ -993,7 +1082,7 @@ function renderAdult(){
     <div class="field"><label for="cap">Jogos por dia</label><select id="cap" data-act="set" data-k="cap" data-n="1">${[1,2,3,4,5,6,99].map(v=>`<option value="${v}" ${s.cap===v?'selected':''}>${v===99?'Sem limite':v}</option>`).join('')}</select></div>
     <div class="field"><label for="mic">Como confirmar a leitura</label><select id="mic" data-act="set" data-k="mic"><option value="auto" ${s.mic==='auto'?'selected':''}>Pelo microfone (se funcionar)</option><option value="manual" ${s.mic==='manual'?'selected':''}>Sempre com um adulto a ouvir</option></select></div>
     <div class="field"><label for="rate">Velocidade da voz</label><input id="rate" type="range" min="0.5" max="1.1" step="0.05" value="${s.rate}" data-act="rate"></div>
-    ${sw('spaced','Letras mais espaçadas')}${sw('upper','Letras maiúsculas')}${sw('sound','Sons e música')}
+    ${sw('selfrec','Botão para a criança ouvir a própria voz')}${sw('spaced','Letras mais espaçadas')}${sw('upper','Letras maiúsculas')}${sw('sound','Sons e música')}
     <button class="btn small ghost" data-act="testvoice">${ICON.speaker} Testar a voz</button>
   </div>
   <div class="panel"><h3>Estado do aparelho</h3>
@@ -1010,13 +1099,16 @@ function renderAdult(){
 
 /* ---------- ações ---------- */
 function go(name){
-  if(G&&name!=='play')G=null;
+  if(G&&name!=='play'){freeSelf();G=null}
   if(name==='home')renderHome();
   else if(name==='shop')renderShop();
   else if(name==='album')renderAlbum();
 }
 const actions={
   start(){startSession()},
+  self(){doSelf()},
+  replay(){playSelf()},
+  lvlinfo(el){const id=el.dataset.id,n=UNL[id];modal(`<h3>Carta bloqueada</h3><p>Chega ao <b>nível ${n}</b> (${LEVEL_NAMES[n-1]}) para a poderes comprar.</p><p class="muted">Cada palavra que lês dá XP!</p><button class="btn coral" data-act="mclose">Está bem</button>`)},
   pick(el){S.avatar=el.dataset.a;setHeroAvatar(S.avatar);save();sfx.fan();renderHome()},
   changehero(){S.avatar=null;save();renderPick()},
   home(){go('home')},shop(){go('shop')},album(){go('album')},
@@ -1057,7 +1149,7 @@ const actions={
 document.addEventListener('click',e=>{
   const el=e.target.closest('[data-act]');if(!el)return;
   const a=el.dataset.act;
-  if(['slow','mic','read','start','next','skip','retry','buy','view','peek','chip','level','preset','sw','mg'].includes(a))sfx.tap();
+  if(['slow','self','replay','mic','read','start','next','skip','retry','buy','view','peek','chip','level','preset','sw','mg'].includes(a))sfx.tap();
   if(actions[a])actions[a](el);
 });
 document.addEventListener('change',e=>{
@@ -1080,7 +1172,7 @@ document.addEventListener('pointerdown',e=>{
 },true));
 
 /* teste e arranque */
-window.__PM={S:()=>S,WORDS,CHIPS,evaluate,analyse,pool,renderHome,renderShop,renderAlbum,renderAdult,startSession,go,actions,G:()=>G,buy,setCoins:n=>{S.coins=n;save()}};
+window.__PM={lvlInfo,UNL,XPV,S:()=>S,WORDS,CHIPS,evaluate,analyse,pool,renderHome,renderShop,renderAlbum,renderAdult,startSession,go,actions,G:()=>G,buy,setCoins:n=>{S.coins=n;save()}};
 renderHome();
 })();
 
