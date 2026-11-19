@@ -70,7 +70,7 @@ svg.ico{width:26px;height:26px;fill:currentColor;flex:none}
 .brand{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:2px}
 .wordmark{font-family:var(--f-marca);font-weight:800;font-size:50px;letter-spacing:.5px;color:var(--mar-fundo);text-shadow:0 3px 0 #fff;line-height:1}
 .wordmark b{color:var(--coral);font-weight:800}
-.tagline{font-size:17px;color:var(--suave)}
+.tagline{font-family:var(--f-marca);font-weight:800;font-size:26px;letter-spacing:1px;color:#5b3fd1;text-align:center;margin:-2px 0 4px}
 .hero{position:relative;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:0;margin:2px 0}
 .hero .mascot{width:190px;height:190px;animation:float 3.2s ease-in-out infinite}
 .hero .logo{position:absolute;left:4px;top:8px;width:84px;height:84px;filter:drop-shadow(0 4px 0 rgba(11,61,110,.25));transform:rotate(-8deg)}
@@ -231,6 +231,13 @@ input[type=range]{width:100%;accent-color:var(--mar)}
 .sheet{max-height:92%;overflow-y:auto}
 .sheet .grid .card-svg{width:100%}
 
+#splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:linear-gradient(180deg,#f4fbff,#cfeafa);transition:opacity .5s}
+#splash.out{opacity:0;pointer-events:none}
+#splash .wordmark{font-size:52px}
+#splash .tagline{margin:0;font-size:28px}
+#splash svg{filter:drop-shadow(0 6px 10px rgba(30,60,140,.25));animation:spop .7s ease-out}
+@keyframes spop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+
 </style>
 </head>
 <body>
@@ -241,6 +248,7 @@ input[type=range]{width:100%;accent-color:var(--mar)}
 <svg class="waves" viewBox="0 0 520 90" preserveAspectRatio="none" aria-hidden="true"><g fill="#7c3aed" opacity=".22"><rect x="10" y="40" width="40" height="50"/><rect x="60" y="22" width="34" height="68"/><rect x="104" y="48" width="46" height="42"/><rect x="160" y="30" width="30" height="60"/><rect x="200" y="12" width="40" height="78"/><rect x="250" y="44" width="36" height="46"/><rect x="296" y="26" width="42" height="64"/><rect x="348" y="50" width="34" height="40"/><rect x="392" y="18" width="38" height="72"/><rect x="440" y="38" width="30" height="52"/><rect x="480" y="30" width="40" height="60"/></g><g fill="#1d4ed8" opacity=".14"><rect x="0" y="60" width="520" height="30"/></g></svg>
 <main id="screen"></main>
 </div>
+<div id="splash"></div>
 <noscript>A SuperPalavra precisa de JavaScript para funcionar.</noscript>
 <script>
 /* Lista inicial de palavras, já separadas em sílabas (português europeu, ortografia).
@@ -794,9 +802,10 @@ function renderHome(){
   const n=pool().length;
   setScreen(`
   <div class="top">${coinsPill()}<div class="coins" style="font-size:20px;color:var(--mar-fundo)" aria-label="${ownedCount()} de ${CARDS.length} cartas">${ICON.album}<span>${ownedCount()}/${CARDS.length}</span></div></div>
-  <div class="brand"><div class="wordmark"><b>Super</b>palavra</div><div class="tagline">Lê, fala e torna-te um herói!</div></div>
-  ${lvlBlock()}
+  <div class="brand"><div class="wordmark"><b>Super</b>palavra</div></div>
   <div class="hero">${mascotSVG('happy')}<div class="logo">${logoIconSVG(84)}</div></div>
+  <div class="tagline">Con - fia em ti</div>
+  ${lvlBlock()}
   <div class="menu">
     ${wellRested?`<div class="rest"><h3>Já jogaste bastante hoje!</h3><p class="muted">Os olhos e a voz também precisam de descanso. Amanhã há mais palavras à tua espera.</p></div>
     <button class="btn ghost" data-act="more">Jogar mais (um adulto confirma)</button>`
@@ -1175,6 +1184,10 @@ document.addEventListener('pointerdown',e=>{
 window.__PM={lvlInfo,UNL,XPV,S:()=>S,WORDS,CHIPS,evaluate,analyse,pool,renderHome,renderShop,renderAlbum,renderAdult,startSession,go,actions,G:()=>G,buy,setCoins:n=>{S.coins=n;save()}};
 renderHome();
 })();
+
+(function(){var sp=document.getElementById('splash');if(!sp)return;
+sp.innerHTML='<div class="wordmark"><b>Super</b>palavra</div>'+logoIconSVG(170)+'<div class="tagline">Con - fia em ti</div>';
+setTimeout(function(){sp.classList.add('out');setTimeout(function(){sp.remove()},600)},1800);})();
 
 </script>
 <script>if("serviceWorker" in navigator&&location.protocol.startsWith("http")){navigator.serviceWorker.register("sw.js").catch(function(){});}</script>
