@@ -238,6 +238,9 @@ input[type=range]{width:100%;accent-color:var(--mar)}
 #splash svg{filter:drop-shadow(0 6px 10px rgba(30,60,140,.25));animation:spop .7s ease-out}
 @keyframes spop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
 
+#splash .spin{width:64px;height:64px;border-radius:50%;border:8px solid #d9d0fb;border-top-color:#7c3aed;border-right-color:#ff6b5b;animation:spin .9s linear infinite;margin:6px 0 4px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
 </style>
 </head>
 <body>
@@ -1186,7 +1189,7 @@ renderHome();
 })();
 
 (function(){var sp=document.getElementById('splash');if(!sp)return;
-sp.innerHTML='<div class="wordmark"><b>Super</b>palavra</div>'+logoIconSVG(170)+'<div class="tagline">Con - fia em ti</div>';
+sp.innerHTML='<div class="wordmark"><b>Super</b>palavra</div>'+'<div class="spin"></div>'+'<div class="tagline">Con - fia em ti</div>';
 setTimeout(function(){sp.classList.add('out');setTimeout(function(){sp.remove()},600)},1800);})();
 
 </script>
