@@ -1,0 +1,17 @@
+<svg viewBox="-100 -100 200 200" width="512" height="512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Palavramar"><g transform="translate(-100 -100)">
+  <defs><linearGradient id="lg-sea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1fb5c9"/><stop offset="1" stop-color="#0b3d6e"/></linearGradient></defs>
+  <circle cx="100" cy="100" r="96" fill="url(#lg-sea)"/>
+  <circle cx="100" cy="100" r="96" fill="none" stroke="#fff" stroke-width="5"/>
+  <circle cx="146" cy="52" r="15" fill="#ffd23f"/>
+  <path d="M104 30 L104 124 L168 124Z" fill="#fff"/>
+  <path d="M98 44 L98 124 L44 124Z" fill="#ffd23f"/>
+  <path d="M104 50 Q132 54 148 100" stroke="#bfe7ff" stroke-width="3" fill="none"/>
+  <circle cx="82" cy="104" r="3.500" fill="#e8743b"/><circle cx="72" cy="108" r="2.500" fill="#e8743b"/>
+  <rect x="100" y="26" width="5" height="102" rx="2" fill="#5b3a1a"/>
+  <path d="M104 26 L124 33 L104 40Z" fill="#ef4444"/>
+  <path d="M36 124 L172 124 L152 150 L58 150Z" fill="#e8743b"/>
+  <path d="M42 131 L166 131" stroke="#fff" stroke-width="4"/>
+  <path d="M6 150 Q28 138 50 150 T94 150 T138 150 T194 150 L194 196 L6 196Z" fill="#1d6fb8" opacity=".95"/>
+  <path d="M6 150 Q28 138 50 150 T94 150 T138 150 T194 150" stroke="#fff" stroke-width="4" fill="none"/>
+  <path d="M6 168 Q28 158 50 168 T94 168 T138 168 T194 168" stroke="#fff" stroke-width="3" fill="none" opacity=".45"/>
+  </g></svg>
